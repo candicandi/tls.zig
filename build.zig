@@ -72,16 +72,8 @@ pub fn build(b: *std.Build) void {
 // Copied from: https://github.com/karlseguin/mqttz/blob/master/build.zig
 fn setupExample(b: *std.Build, exe: *std.Build.Step.Compile, comptime name: []const u8) void {
     b.installArtifact(exe);
-
     const run_cmd = b.addRunArtifact(exe);
-    run_cmd.step.dependOn(b.getInstallStep());
-    if (exe.exec_cmd_args) |exec_cmd_args| {
-        for (exec_cmd_args) |cmd_arg| {
-            if (cmd_arg) |arg| {
-                run_cmd.addArg(arg);
-            }
-        }
-    }
+    run_cmd.addPassthruArgs();
     const run_step = b.step("example_" ++ name, "Run the " ++ name ++ " example");
     run_step.dependOn(&run_cmd.step);
 }
